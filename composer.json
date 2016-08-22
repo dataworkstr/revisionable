@@ -1,28 +1,32 @@
 {
-    "name": "sofa/revisionable",
-    "description": "Nice and easy way to handle revisions of your db.",
+    "name": "dataworkstr/revisionable",
+    "description": "Nice and easy way to handle revisions of your MongoDB.",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/jarektkaczyk/revisionable/issues",
-        "source": "https://github.com/jarektkaczyk/revisionable"
+        "issues": "https://github.com/dataworkstr/revisionable/issues",
+        "source": "https://github.com/dataworkstr/revisionable"
     },
     "keywords": [
         "laravel",
+        "lumen",
         "eloquent",
         "revisionable",
         "revision",
-        "history"
+        "history",
+        "mongodb",
+        "document"
     ],
     "authors": [
         {
-            "name": "Jarek Tkaczyk",
-            "email": "jarek@softonsofa.com",
-            "homepage": "http://softonsofa.com/",
+            "name": "Engin Kartal",
+            "email": "admin@yellow.com.tr",
+            "homepage": "https://yellowpages.com.tr",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": ">=5.4"
+        "php": ">=5.4",
+        "mongodb/mongodb": "^1.0.0"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0@dev",

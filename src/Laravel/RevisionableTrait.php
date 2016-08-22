@@ -8,7 +8,6 @@ use DateTime;
  * @property array relations
  * @property array original
  * @property array attributes
- * @property array attributes
  * @property array revisionableConnection
  *
  * @method void created(\Closure|string $callback)
