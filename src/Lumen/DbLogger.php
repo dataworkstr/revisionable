@@ -67,11 +67,11 @@ class DbLogger implements Logger
 
         $connection->table($this->table)->insert([
             'action'       => substr($action, 0, 255),
-            'table_name'   => substr($table, 0, 255),
-            'row_id'       => substr($id, 0, 255),
+            'collection'   => substr($table, 0, 255),
+            'document'       => substr($id, 0, 255),
             'old'          => $old_diff,
             'new'          => $new_diff,
-            'user'         => substr($user, 0, 255),
+            'updated_by'         => substr($user, 0, 255),
             'created_at'   => $currentDatetime,
         ]);
 
