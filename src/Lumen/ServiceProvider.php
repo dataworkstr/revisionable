@@ -1,5 +1,6 @@
 <?php namespace Sofa\Revisionable\Lumen;
 
+use League\Flysystem\Config;
 use Illuminate\Support\ServiceProvider as BaseProvider;
 use ReflectionClass;
 
@@ -23,7 +24,7 @@ class ServiceProvider extends BaseProvider
     public function boot()
     {
         $this->publishes([
-            $this->guessPackagePath() . '/config/config.php' => config('sofa_revisionable.php'),
+            $this->guessPackagePath() . '/config/config.php' => config('sofa_revisionable'),
             $this->guessPackagePath() . '/migrations/' => base_path('/database/migrations'),
         ]);
     }
@@ -53,8 +54,10 @@ class ServiceProvider extends BaseProvider
     {
         $table = $this->app['config']->get('sofa_revisionable.table', 'revisions');
 
-        $this->app->singleton('revisionable.logger', function ($app) use ($table) {
-            return new \Sofa\Revisionable\Lumen\DbLogger($app['db']->connection(), $table);
+        $options = $this->app['config']->get('sofa_revisionable.options',['max_revision'=>10]);
+
+        $this->app->singleton('revisionable.logger', function ($app) use ($table,$options) {
+            return new \Sofa\Revisionable\Lumen\DbLogger($app['db']->connection(), $table,$options);
         });
     }
 

@@ -30,15 +30,23 @@ class DbLogger implements Logger
     protected $table;
 
     /**
+     * Revisions options.
+     *
+     * @var array
+     */
+    protected $options;
+
+    /**
      * Create a new DbLogger.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param string $table
      */
-    public function __construct(ConnectionInterface $connection, $table)
+    public function __construct(ConnectionInterface $connection, $table,array $options = [])
     {
         $this->defaultConnection = $connection;
         $this->table             = $table;
+        $this->options           = $options;
     }
 
     /**
@@ -64,6 +72,20 @@ class DbLogger implements Logger
         }else {
             $currentDatetime = new \MongoDB\BSON\UTCDateTime(time() * 1000);
         }
+
+        $max_revision= $this->options['max_revision'];
+
+        $documentCount = $connection->table($this->table)->where('document',substr($id, 0, 255))->count();
+
+        if($max_revision == $documentCount)
+        {
+            $firstRecord= $connection->table($this->table)->where('document',substr($id, 0, 255))->orderBy('created_at')->first();
+
+            $connection->table($this->table)->where('_id',$firstRecord['_id'])->delete();
+
+        }
+
+
 
         $connection->table($this->table)->insert([
             'action'       => substr($action, 0, 255),

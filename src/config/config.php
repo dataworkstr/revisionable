@@ -27,8 +27,9 @@ return [
     |
     |  - id for illuminate
     |  - login field (email) for sentry/sentinel
+    |  - id or ANY field in User model for tymon/jwt-auth
     */
-    'userfield'    => null,
+    'userfield'    => 'id',
 
 
     /*
@@ -37,5 +38,16 @@ return [
     |--------------------------------------------------------------------------
     */
     'table'        => 'revisions',
+
+    /*
+|--------------------------------------------------------------------------
+| Table max revision count / default=10
+|--------------------------------------------------------------------------
+*/
+    'options'        => [
+        'max_revision'=>10
+    ],
+
+
 
 ];
