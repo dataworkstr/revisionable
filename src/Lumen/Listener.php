@@ -122,7 +122,11 @@ class Listener implements ListenerInterface
                 $new = $revisioned->getNewAttributes();
                 $new_diff=$revisioned->getDiff();
                 foreach ($new_diff as $key => $nd){
-                    $old_diff[$key] = $old[$key];
+                    if(isset($old[$key])) {
+                        $old_diff[$key] = $old[$key];
+                    }else{
+                        $old_diff[$key]="";
+                    }
                 }
                 break;
         }
