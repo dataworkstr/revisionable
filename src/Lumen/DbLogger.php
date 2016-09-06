@@ -75,11 +75,11 @@ class DbLogger implements Logger
 
         $max_revision= $this->options['max_revision'];
 
-        $documentCount = $connection->table($this->table)->where('document',substr($id, 0, 255))->count();
+        $documentCount = $connection->table($this->table)->where('action','updated')->where('document',substr($id, 0, 255))->count();
 
         if($max_revision == $documentCount)
         {
-            $firstRecord= $connection->table($this->table)->where('document',substr($id, 0, 255))->orderBy('created_at')->first();
+            $firstRecord= $connection->table($this->table)->where('action','updated')->where('document',substr($id, 0, 255))->orderBy('created_at')->first();
 
             $connection->table($this->table)->where('_id',$firstRecord['_id'])->delete();
 
