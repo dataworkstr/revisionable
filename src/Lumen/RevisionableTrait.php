@@ -228,6 +228,12 @@ trait RevisionableTrait
      */
     private function getArrayInterSectData(array $values){
 
+        foreach ($values as $k => $v){
+            if(is_array($v) && count($v)==0){
+                $values[$k]=[""];
+            }
+        }
+
         $ritit = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($values));
 
         $result = array();
