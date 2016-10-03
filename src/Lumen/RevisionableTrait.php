@@ -233,9 +233,8 @@ trait RevisionableTrait
                 $values[$k]=[""];
             }
         }
-
+        $values = $this->convertDateFromMongoDate($values);
         $ritit = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($values));
-
         $result = array();
         foreach ($ritit as $leafValue) {
             $keys = array();
@@ -247,6 +246,19 @@ trait RevisionableTrait
 
         return $result;
     }
+
+   private function convertDateFromMongoDate ($values){
+
+        foreach ($values as $k => $v) {
+            if ($v instanceof \MongoDB\BSON\UTCDateTime) {
+                $date = $v->toDateTime();
+                $date->setTimezone(new \DateTimeZone('UTC'));
+                $values[$k] = $date->format('Y-m-d');
+            }
+        }
+        return $values;
+    }
+
 
     /**
      * Events being tracked.
