@@ -14,7 +14,6 @@ class DbLogger implements Logger
     protected $connection;
 
 
-
     /**
      * Default database connection.
      *
@@ -42,64 +41,63 @@ class DbLogger implements Logger
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param string $table
      */
-    public function __construct(ConnectionInterface $connection, $table,array $options = [])
+    public function __construct(ConnectionInterface $connection, $table, array $options = [])
     {
         $this->defaultConnection = $connection;
-        $this->table             = $table;
-        $this->options           = $options;
+        $this->table = $table;
+        $this->options = $options;
     }
 
     /**
      * Log data revisions in the db.
      *
-     * @param  string  $action
-     * @param  string  $table
-     * @param  int     $id
-     * @param  array   $old
-     * @param  array   $new
-     * @param  string  $user
+     * @param  string $action
+     * @param  string $table
+     * @param  int $id
+     * @param  array $old
+     * @param  array $new
+     * @param  string $user
      * @return void
      */
-    public function revisionLog($action, $table, $id, array $old = [], array $new = [], $user = null,array $old_diff = [],array $new_diff = [])
+    public function revisionLog($action, $table, $id, array $old = [], array $new = [], $user = null, array $old_diff = [], array $new_diff = [])
     {
         $user = $this->parseUser($user);
 
         $connection = $this->getCurrentConnection();
 
-        if(method_exists ($connection,'getDateFormat')) {
+        if (method_exists($connection, 'getDateFormat')) {
             $format = $connection->getQueryGrammar()->getDateFormat();
             $currentDatetime = (new DateTime)->format($format);
-        }else {
+        } else {
             $currentDatetime = new \MongoDB\BSON\UTCDateTime(time() * 1000);
         }
 
-        $max_revision= $this->options['max_revision'];
+        if ($action == 'updated') {
 
-        $documentCount = $connection->table($this->table)->where('action','updated')->where('document',substr($id, 0, 255))->count();
+            $max_revision = $this->options['max_revision'];
 
-        if($max_revision == $documentCount)
-        {
-            $firstRecord= $connection->table($this->table)->where('action','updated')->where('document',substr($id, 0, 255))->orderBy('created_at')->first();
+            $documentCount = $connection->table($this->table)->where('action', 'updated')->where('document', substr($id, 0, 255))->count();
 
-            $connection->table($this->table)->where('_id',$firstRecord['_id'])->delete();
+            if ($max_revision == $documentCount) {
+                $firstRecord = $connection->table($this->table)->where('action', 'updated')->where('document', substr($id, 0, 255))->orderBy('created_at')->first();
 
+                $connection->table($this->table)->where('_id', $firstRecord['_id'])->delete();
+
+            }
         }
 
-
-
         $connection->table($this->table)->insert([
-            'action'       => substr($action, 0, 255),
-            'collection'   => substr($table, 0, 255),
-            'document'       => substr($id, 0, 255),
-            'old'          => $old_diff,
-            'new'          => $new_diff,
-            'updated_by'         => substr($user, 0, 255),
-            'created_at'   => $currentDatetime,
+            'action' => substr($action, 0, 255),
+            'collection' => substr($table, 0, 255),
+            'document' => substr($id, 0, 255),
+            'old' => $old_diff,
+            'new' => $new_diff,
+            'updated_by' => substr($user, 0, 255),
+            'created_at' => $currentDatetime,
         ]);
 
         $this->resetConnection();
     }
-
 
 
     /**
@@ -118,7 +116,7 @@ class DbLogger implements Logger
     /**
      * Translate provided user to appropriate string.
      *
-     * @param  mixed  $user
+     * @param  mixed $user
      * @return string
      */
     protected function parseUser($user)
@@ -150,7 +148,7 @@ class DbLogger implements Logger
      * Get Server variable.
      *
      * @param  string $key
-     * @param  mixed  $default
+     * @param  mixed $default
      * @return string|array
      */
     protected function getFromServer($key, $default = null)
