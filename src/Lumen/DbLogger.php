@@ -92,7 +92,7 @@ class DbLogger implements Logger
             'document' => substr($id, 0, 255),
             'old' => $old_diff,
             'new' => $new_diff,
-            'updated_by' => substr($user, 0, 255),
+            'updated_by' => $user,
             'created_at' => $currentDatetime,
         ]);
 
@@ -121,7 +121,7 @@ class DbLogger implements Logger
      */
     protected function parseUser($user)
     {
-        return (is_string($user) || is_numeric($user)) ? $user : ' -- ';
+        return (is_string($user) || is_numeric($user)) ? $user : null;
     }
 
     /**

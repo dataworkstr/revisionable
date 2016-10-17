@@ -79,11 +79,13 @@ class Listener implements ListenerInterface
      */
     public function getCurrentUser()
     {
-        $user='--';
+        $user=null;
         if($this->userProvider->getUser()!=null){
             $user =$this->userProvider->getUser();
         }else {
-            $user = $this->auth()->user()->_id;
+            if(!empty($this->auth()->user())) {
+                $user = $this->auth()->user()->_id;
+            }
         }
 
         return $user;
