@@ -83,8 +83,11 @@ class Listener implements ListenerInterface
         if($this->userProvider->getUser()!=null){
             $user =$this->userProvider->getUser();
         }else {
-            if(!empty($this->auth()->user())) {
-                $user = $this->auth()->user()->_id;
+            $api = app(\Dingo\Api\Routing\Router::class);
+            if ($api->getCurrentRequest()->method() != 'GET') {
+                if (!empty($this->auth()->user())) {
+                    $user = $this->auth()->user()->_id;
+                }
             }
         }
 
